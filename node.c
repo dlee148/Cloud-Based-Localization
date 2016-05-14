@@ -1,10 +1,12 @@
+#include <stdio.h>
+#include <string.h>
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <my_global.h>
 #include <mysql.h>
 
 int kbhit();
+int getSignalLevel();
 void finish_with_error(MYSQL *con);
 
 int main() {
@@ -19,12 +21,16 @@ int main() {
     finish_with_error(con);
   }
 
-  if (mysql_query(con, "INSERT INTO Signals VALUES()")) {
-    finish_with_error(con);
-  }
-
   while (1) {
-    if (mysql_query(con, "SELECT * FROM Signals")) {
+    char query[60];
+    strcat(query, "UPDATE Signals SET SignalLevel = '");
+    char* sigStr;
+    sprintf(sigStr, "%d", getSignalLevel());
+    strcat(query, sigStr);
+    strcat(query, "' WHERE EdisonID='A'");
+    /* Change to 'B' if appropriate */
+
+    if (mysql_query(con, query)) {
       finish_with_error(con);
     }
 
@@ -59,6 +65,27 @@ int kbhit() {
   }
 
   return 0;
+}
+
+int getSignalLevel() {
+  // get info from iwconfig
+  FILE* fp;
+  char path[1035];
+  int signal = 0;
+  fp = popen("iwconfig 2>/dev/null | grep \"Signal level\"", "r");
+  fgets(path, sizeof(path) - 1, fp);
+
+  // extract signal level
+  if (path[strlen(path) - 9] <= 57 && path[strlen(path) - 9] >= 48) {
+    signal += 10 * (path[strlen(path) - 9] - '0');
+  }
+  if (path[strlen(path) - 8] <= 57 && path[strlen(path) - 8] >= 48) {
+    signal += path[strlen(path) - 8] - '0';
+  }
+
+  // close and ret urn
+  pclose(fp);
+  return signal;
 }
 
 void finish_with_error(MYSQL *con) {

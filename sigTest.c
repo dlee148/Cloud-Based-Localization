@@ -1,3 +1,10 @@
+////////////////////////////////////////////////////
+// Usage: Configure one Edison as an access point //
+// and connect. Run sigTest to obtain RSSI        //
+// Used primarily for data collection.            //
+////////////////////////////////////////////////////
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,10 +1,10 @@
+#include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <my_global.h>
 #include <mysql.h>
 
-#define distance_C 5;
+#define distance_C 5
 /* pre-measured value, c */
 
 int kbhit();
@@ -31,10 +31,10 @@ int main() {
     MYSQL_RES *result = mysql_store_result(con);
 
     int distance_A, distance_B;
-    MYSQL_ROW row = mysql_fetch_row();
-    distance_A = row[1];
-    row = mysql_fetch_row();
-    distance_B = row[1];
+    MYSQL_ROW row = mysql_fetch_row(result);
+    distance_A = atoi(row[1]);
+    row = mysql_fetch_row(result);
+    distance_B = atoi(row[1]);
 
     displayMap(distance_A, distance_B, distance_C);
 
