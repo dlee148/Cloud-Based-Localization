@@ -5,6 +5,8 @@
 #include <fcntl.h>
 #include <mysql.h>
 
+#include <stdlib.h>
+
 int kbhit();
 int getSignalLevel();
 void finish_with_error(MYSQL *con);
@@ -17,24 +19,28 @@ int main() {
     exit(1);
   }
 
-  if (mysql_real_connect(con, "host", "user", "pw", "db", "port", "socket", "flag") == NULL) {
+  if (mysql_real_connect(con, "192.168.42.1", "root", "password", "CBL", 0, NULL, 0) == NULL) {
     finish_with_error(con);
   }
 
   while (1) {
-    char query[60];
-    strcat(query, "UPDATE Signals SET SignalLevel = '");
-    char* sigStr;
+    char query[100];
+    char sigStr[100];
+
+    sprintf(query, "%s", "UPDATE RSSI SET SigStrength=");
     sprintf(sigStr, "%d", getSignalLevel());
     strcat(query, sigStr);
-    strcat(query, "' WHERE EdisonID='A'");
+    strcat(query, " WHERE NodeID='A'");
     /* Change to 'B' if appropriate */
 
     if (mysql_query(con, query)) {
       finish_with_error(con);
     }
 
+    printf("Successful update: %s.\n", sigStr);
+
     if (kbhit()) break;
+    sleep(1);
   }
 
   mysql_close(con);
@@ -83,7 +89,7 @@ int getSignalLevel() {
     signal += path[strlen(path) - 8] - '0';
   }
 
-  // close and ret urn
+  // close and return
   pclose(fp);
   return signal;
 }
