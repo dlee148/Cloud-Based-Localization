@@ -1,3 +1,7 @@
+/////////////////////////////////////////////////////////////////
+// IMPORTANT: CHANGE IP AND DISTANCE_C BEFORE USE IF NECESSARY //
+/////////////////////////////////////////////////////////////////
+
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
@@ -6,8 +10,10 @@
 #include <mysql.h>
 #include <math.h>
 
-#define distance_C 5
-/* pre-measured value, c */
+//pre-measured value, c, in meters
+#define distance_C 50
+//dimensions of displayed map (currently square)
+#define dim 50
 
 int kbhit();
 double sigToDist(int sig);
@@ -42,6 +48,7 @@ int main() {
     system("clear");
     displayMap(sigToDist(sig_A), sigToDist(sig_B), distance_C);
 
+    // press any key to break
     if (kbhit()) break;
     sleep(1);
   }
@@ -89,14 +96,24 @@ void finish_with_error(MYSQL *con) {
 }
 
 void displayMap(double a, double b, double c) {
-  printf("A: %f, B: %f, C: %f\n", a, b, c);
+  double theta;
+  int x, y, i, j;
+
+  //printf("A: %f, B: %f, C: %f\n", a, b, c);
 
   //Law of Cosines
-  double theta = acos((pow(b,2)-pow(a,2)-pow(c,2))/(-2*a*c));
-  double x = a*cos(theta);
-  double y = a*sin(theta);
+  theta = acos((pow(b,2)-pow(a,2)-pow(c,2))/(-2*a*c));
+  x = round(a*cos(theta));
+  y = round(a*sin(theta));
 
-  // Miguel's code here
+  for (i=0; i<dim; i++) {
+    for (j=0; j<dim; j++) {
+      if (i==x && j==y) printf("* ");
+      else printf("- ");
+    }
+    printf("\n");
+  }
+  printf("Current position: x = %d, y = %d",x,y);
 
   return;
 }

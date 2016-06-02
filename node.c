@@ -1,10 +1,13 @@
+/////////////////////////////////////////////////////////////
+// IMPORTANT: CHANGE IP AND NODEID BEFORE USE IF NECESSARY //
+/////////////////////////////////////////////////////////////
+
 #include <stdio.h>
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <mysql.h>
-
 #include <stdlib.h>
 
 int kbhit();
@@ -39,6 +42,7 @@ int main() {
 
     printf("Successful update: %s.\n", sigStr);
 
+    // press any key to break
     if (kbhit()) break;
     sleep(1);
   }
