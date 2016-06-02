@@ -108,7 +108,7 @@ void displayMap(double a, double b, double c) {
 
   for (i=0; i<dim; i++) {
     for (j=0; j<dim; j++) {
-      if (i==x && j==y) printf("* ");
+      if (j == x && i == abs(y - dim - 1)) printf("* ");
       else printf("- ");
     }
     printf("\n");
