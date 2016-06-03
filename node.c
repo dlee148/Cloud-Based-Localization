@@ -34,7 +34,7 @@ int main() {
     sprintf(sigStr, "%d", getSignalLevel());
     strcat(query, sigStr);
     strcat(query, " WHERE NodeID='A'");
-    /* Change to 'B' if appropriate */
+    // Change to 'B' or 'C' if appropriate
 
     if (mysql_query(con, query)) {
       finish_with_error(con);
